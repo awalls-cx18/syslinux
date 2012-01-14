@@ -1,0 +1,10 @@
+Initially created from the ACPICA Git repository on 14 Jan 2012
+using the following steps:
+
+	$ cd ~/foo
+	$ git clone git://github.com/otcshare/acpica.git
+	$ cd acpica/generate/linux/patches
+	$ ./acpisrc.sh  ~/foo/acpica/
+	$ ./linuxize.sh ~/foo/acpica/
+	$ mv new.linux ~/foo/syslinux/com32/acpioff/acpica_linuxized
+
