@@ -76,7 +76,7 @@ acpi_ut_add_address_range(acpi_adr_space_type space_id,
 			  acpi_physical_address address,
 			  u32 length, struct acpi_namespace_node *region_node)
 {
-	ACPI_ADDRESS_RANGE *range_info;
+	struct acpi_address_range *range_info;
 	acpi_status status;
 
 	ACPI_FUNCTION_TRACE(ut_add_address_range);
@@ -88,7 +88,7 @@ acpi_ut_add_address_range(acpi_adr_space_type space_id,
 
 	/* Allocate/init a new info block, add it to the appropriate list */
 
-	range_info = ACPI_ALLOCATE(sizeof(ACPI_ADDRESS_RANGE));
+	range_info = ACPI_ALLOCATE(sizeof(struct acpi_address_range));
 	if (!range_info) {
 		return_ACPI_STATUS(AE_NO_MEMORY);
 	}
@@ -137,8 +137,8 @@ void
 acpi_ut_remove_address_range(acpi_adr_space_type space_id,
 			     struct acpi_namespace_node *region_node)
 {
-	ACPI_ADDRESS_RANGE *range_info;
-	ACPI_ADDRESS_RANGE *prev;
+	struct acpi_address_range *range_info;
+	struct acpi_address_range *prev;
 
 	ACPI_FUNCTION_TRACE(ut_remove_address_range);
 
@@ -205,7 +205,7 @@ u32
 acpi_ut_check_address_range(acpi_adr_space_type space_id,
 			    acpi_physical_address address, u32 length, u8 warn)
 {
-	ACPI_ADDRESS_RANGE *range_info;
+	struct acpi_address_range *range_info;
 	acpi_physical_address end_address;
 	char *pathname;
 	u32 overlap_count = 0;
@@ -274,8 +274,8 @@ acpi_ut_check_address_range(acpi_adr_space_type space_id,
 
 void acpi_ut_delete_address_lists(void)
 {
-	ACPI_ADDRESS_RANGE *next;
-	ACPI_ADDRESS_RANGE *range_info;
+	struct acpi_address_range *next;
+	struct acpi_address_range *range_info;
 	int i;
 
 	/* Delete all elements in all address range lists */
