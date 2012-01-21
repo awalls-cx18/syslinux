@@ -1,6 +1,7 @@
 ## -----------------------------------------------------------------------
 ##
 ##   Copyright 2001-2008 H. Peter Anvin - All Rights Reserved
+##   Copyright 2012 Andy Walls <awalls@md.metrocast.net>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as published by
@@ -10,26 +11,54 @@
 ##
 ## -----------------------------------------------------------------------
 
-##
-## samples for syslinux users
-##
+# Avoid <acpi/acpi.h> header file conflicts with syslinux/com32/gplinclude
+NOGPL = 1
 
 topdir = ../..
 MAKEDIR = $(topdir)/mk
 include $(MAKEDIR)/com32.mk
 
-all:	acpioff.c32
+LIBACPICA_SRC_DIRS = acpica_linuxized/drivers/acpi/acpica \
+	acpica_linuxized/drivers/acpi
+
+# Hijack GPLINCLUDE for ourselves
+GPLINCLUDE = -I$(CURDIR)/acpica_linuxized/include \
+	-I$(CURDIR)/acpica_linuxized/include/acpi \
+	-I$(CURDIR)/acpica_linuxized/drivers/acpi/acpica
+
+# The ACPICA can have a number of unused parameters due to macros and
+# configuration options
+GCCWARN += -Wno-unused-parameter
+
+LIBACPICA_OBJS := $(foreach dir,$(LIBACPICA_SRC_DIRS),$(patsubst %.c,%.o,$(wildcard $(dir)/*.c)))
+
+#all: libacpica.a acpioff.c32
+all: libacpica.a
+
+libacpica.a: $(LIBACPICA_OBJS)
+	rm -f $@
+	$(AR) cq $@ $^
+	$(RANLIB) $@
 
 tidy dist:
-	rm -f *.o *.lo *.a *.lst *.elf .*.d *.tmp
+	find . \( -name \*.o   -o \
+	          -name \*.lo  -o \
+	          -name \*.a   -o \
+	          -name \*.lst -o \
+	          -name \*.elf -o \
+	          -name .\*.d  -o \
+	          -name \*.tmp \) -print0 | xargs -0r rm -f
 
 clean: tidy
-	rm -f *.lnx
+	find . -name \*.lnx -print0 | xargs -0r rm -f
 
 spotless: clean
-	rm -f *.lss *.c32 *.com
-	rm -f *~ \#*
+	find . \( -name \*.lss -o \
+	          -name \*.c32 -o \
+	          -name \*.com -o \
+	          -name "*~"   -o \
+	          -name "#*" \) -print0 | xargs -0r rm -f
 
 install:	
 
--include .*.d
+-include .*.d */.*.d */*/.*.d */*/*/.*.d
