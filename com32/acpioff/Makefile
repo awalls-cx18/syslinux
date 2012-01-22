@@ -14,6 +14,8 @@
 # Avoid <acpi/acpi.h> header file conflicts with syslinux/com32/gplinclude
 NOGPL = 1
 
+LIBS += $(CURDIR)/libacpica.a
+
 topdir = ../..
 MAKEDIR = $(topdir)/mk
 include $(MAKEDIR)/com32.mk
@@ -21,8 +23,7 @@ include $(MAKEDIR)/com32.mk
 LIBACPICA_SRC_DIRS = acpica_linuxized/drivers/acpi/acpica \
 	acpica_linuxized/drivers/acpi
 
-# Hijack GPLINCLUDE for ourselves
-GPLINCLUDE = -I$(CURDIR)/acpica_linuxized/include \
+CFLAGS += -I$(CURDIR)/acpica_linuxized/include \
 	-I$(CURDIR)/acpica_linuxized/include/acpi \
 	-I$(CURDIR)/acpica_linuxized/drivers/acpi/acpica
 
@@ -32,8 +33,7 @@ GCCWARN += -Wno-unused-parameter
 
 LIBACPICA_OBJS := $(foreach dir,$(LIBACPICA_SRC_DIRS),$(patsubst %.c,%.o,$(wildcard $(dir)/*.c)))
 
-#all: libacpica.a acpioff.c32
-all: libacpica.a
+all: libacpica.a acpioff.c32
 
 libacpica.a: $(LIBACPICA_OBJS)
 	rm -f $@
