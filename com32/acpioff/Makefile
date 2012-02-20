@@ -31,6 +31,13 @@ CFLAGS += -I$(CURDIR)/acpica_linuxized/include \
 # configuration options
 GCCWARN += -Wno-unused-parameter
 
+# Uncomment to have the ACPICA spew debugging output
+#CFLAGS += -DACPI_DEBUG_OUTPUT
+
+# Uncomment when ACPI_DEBUG_OUTPUT is defined for debug output, as the ACPICA
+# debug output code generates many warnings
+#GCCWARN += -Wno-error
+
 LIBACPICA_OBJS := $(foreach dir,$(LIBACPICA_SRC_DIRS),$(patsubst %.c,%.o,$(wildcard $(dir)/*.c)))
 
 all: libacpica.a acpioff.c32
