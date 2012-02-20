@@ -116,8 +116,6 @@ int acpi_os_process_deferred_work(int noexec)
 		free(work);
 		i++;
 	}
-	ACPI_INFO((AE_INFO, "%s %u deferred work item(s)",
-	           noexec ? "Deallocated" : "Processed", i));
 	return i;
 }
 
