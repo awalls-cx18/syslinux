@@ -27,15 +27,59 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <console.h>
 #include <acpi/acpi.h>
 #include "osl.h"
 
+acpi_status dump_tree_cb(acpi_handle obj, u32 depth, void *context, void **ret)
+{
+	/*
+	 * This callback is called when a node is first traversed,
+	 * before traversing its children.
+	 */
+	acpi_status status;
+	struct acpi_buffer b;
+
+	b.length = ACPI_ALLOCATE_BUFFER;
+	b.pointer = NULL; 
+	status = acpi_get_name(obj, ACPI_FULL_PATHNAME, &b);
+	acpi_os_process_deferred_work(FALSE);
+
+	if (ACPI_FAILURE(status)) {
+		printf("acpioff: dump_tree_cb(): acpi_get_name() failed: %s\n",
+		       acpi_format_exception(status));
+	} else {
+		printf("    %s\n", (char *)(b.pointer));
+	}
+
+	if (b.pointer != NULL)
+		acpi_os_free(b.pointer);
+
+	return AE_OK;
+}
+
+void dump_acpi_tree(void)
+{
+	printf("ACPI namespace tree dump:\n");
+	acpi_walk_namespace(ACPI_TYPE_ANY, ACPI_ROOT_OBJECT, 0xffffffff,
+			    dump_tree_cb, NULL, NULL, (void **) NULL);
+	acpi_os_process_deferred_work(FALSE);
+}
+
 int main(int argc, char *argv[])
 {
 	acpi_status status;
+	int dont_shutdown = 0;
 
 	openconsole(&dev_stdcon_r, &dev_stdcon_w);
+
+	if (argc > 1)
+		acpi_dbg_level = strtoul(argv[1], NULL, 0);
+	if (argc > 2)
+		acpi_dbg_layer = strtoul(argv[2], NULL, 0);
+	if (argc > 3)
+		dont_shutdown = 1;
 
 	status = acpi_initialize_subsystem();
 	acpi_os_process_deferred_work(FALSE);
@@ -57,9 +101,19 @@ int main(int argc, char *argv[])
 		return status;
 	}
 
+	status = acpi_load_tables();
+	acpi_os_process_deferred_work(FALSE);
+	if (ACPI_FAILURE(status))
+	{
+		printf("acpioff: acpi_load_tables() failed: %s\n",
+		       acpi_format_exception(status));
+		acpi_terminate();
+		return status;
+	}
+
 	/*
 	 * Our OSL can't easily handle the SCI interrupt, without major
-	 * changes to SYSLINUX
+	 * changes to SYSLINUX.  Maybe we shouldn't try to init events:
 	 *
 	 * status =
 	 *       acpi_enable_subsystem(ACPI_NO_EVENT_INIT|ACPI_NO_HANDLER_INIT);
@@ -84,12 +138,20 @@ int main(int argc, char *argv[])
 		return status;
 	}
 
+	if (dont_shutdown)
+	{
+		dump_acpi_tree();
+		acpi_terminate();
+		return 0;
+	}
+
 	status = acpi_enter_sleep_state_prep(ACPI_STATE_S5); /* S5: poweroff */
 	acpi_os_process_deferred_work(FALSE);
 	if (ACPI_FAILURE(status))
 	{
 		printf("acpioff: acpi_enter_sleep_state_prep() failed: %s\n",
 		       acpi_format_exception(status));
+		dump_acpi_tree();
 		acpi_terminate();
 		return status;
 	}
@@ -101,10 +163,12 @@ int main(int argc, char *argv[])
 	{
 		printf("acpioff: acpi_enter_sleep_state() failed: %s\n",
 		       acpi_format_exception(status));
+		dump_acpi_tree();
 		acpi_terminate();
 		return status;
 	}
 
+	dump_acpi_tree();
 	acpi_terminate();
 	return 0;
 }
