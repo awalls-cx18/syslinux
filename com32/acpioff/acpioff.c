@@ -149,21 +149,21 @@ int main(int argc, char *argv[])
 	acpi_os_process_deferred_work(FALSE);
 	if (ACPI_FAILURE(status))
 	{
+		dump_acpi_tree();
 		printf("acpioff: acpi_enter_sleep_state_prep() failed: %s\n",
 		       acpi_format_exception(status));
-		dump_acpi_tree();
 		acpi_terminate();
 		return status;
 	}
 
 	status = acpi_enter_sleep_state(ACPI_STATE_S5); /* S5: poweroff */
-	/* We should return from the above, if we power off */
+	/* We should not return from the above, if we power off */
 	acpi_os_process_deferred_work(FALSE);
 	if (ACPI_FAILURE(status))
 	{
+		dump_acpi_tree();
 		printf("acpioff: acpi_enter_sleep_state() failed: %s\n",
 		       acpi_format_exception(status));
-		dump_acpi_tree();
 		acpi_terminate();
 		return status;
 	}
