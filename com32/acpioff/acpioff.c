@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <console.h>
+#include <sys/cpu.h>
 #include <acpi/acpi.h>
 #include "osl.h"
 
@@ -87,8 +88,7 @@ int main(int argc, char *argv[])
 	{
 		printf("acpioff: acpi_initialize_subsystem() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	status = acpi_initialize_tables(NULL, 16, FALSE);
@@ -97,8 +97,7 @@ int main(int argc, char *argv[])
 	{
 		printf("acpioff: acpi_initialize_tables() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	status = acpi_load_tables();
@@ -107,8 +106,7 @@ int main(int argc, char *argv[])
 	{
 		printf("acpioff: acpi_load_tables() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	/*
@@ -124,8 +122,7 @@ int main(int argc, char *argv[])
 	{
 		printf("acpioff: acpi_enable_subsystem() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	status = acpi_initialize_objects(ACPI_FULL_INITIALIZATION);
@@ -134,15 +131,13 @@ int main(int argc, char *argv[])
 	{
 		printf("acpioff: acpi_initialize_objects() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	if (dont_shutdown)
 	{
 		dump_acpi_tree();
-		acpi_terminate();
-		return 0;
+		goto err;
 	}
 
 	status = acpi_enter_sleep_state_prep(ACPI_STATE_S5); /* S5: poweroff */
@@ -152,8 +147,7 @@ int main(int argc, char *argv[])
 		dump_acpi_tree();
 		printf("acpioff: acpi_enter_sleep_state_prep() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	status = acpi_enter_sleep_state(ACPI_STATE_S5); /* S5: poweroff */
@@ -164,11 +158,16 @@ int main(int argc, char *argv[])
 		dump_acpi_tree();
 		printf("acpioff: acpi_enter_sleep_state() failed: %s\n",
 		       acpi_format_exception(status));
-		acpi_terminate();
-		return status;
+		goto err;
 	}
 
 	dump_acpi_tree();
+err:
 	acpi_terminate();
-	return 0;
+	printf("acpioff: failed to shut system off. Reboot required.\n");
+
+	while (1)
+		hlt();
+
+	return -1;
 }
