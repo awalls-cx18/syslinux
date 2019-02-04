@@ -128,10 +128,8 @@ LIBENTRY_OBJS = \
 	exit.o
 
 LIBGCC_OBJS = \
-	libgcc/__ashldi3.o libgcc/__udivdi3.o			\
-	libgcc/__negdi2.o libgcc/__ashrdi3.o libgcc/__lshrdi3.o		\
-	libgcc/__muldi3.o libgcc/__udivmoddi4.o libgcc/__umoddi3.o	\
-	libgcc/__divdi3.o libgcc/__moddi3.o
+	  $(patsubst $(com32)/lib/%.c,%.o,$(wildcard $(com32)/lib/$(ARCH)/libgcc/*.c)) \
+	  $(patsubst $(com32)/lib/%.S,%.o,$(wildcard $(com32)/lib/$(ARCH)/libgcc/*.S))
 
 LIBCONSOLE_OBJS = \
 	\
@@ -197,11 +195,8 @@ CORELIBOBJS = \
 	sys/err_read.o sys/err_write.o sys/null_read.o 			\
 	sys/stdcon_write.o						\
 	syslinux/memscan.o strrchr.o strcat.o				\
-	libgcc/__ashldi3.o libgcc/__udivdi3.o				\
-	libgcc/__negdi2.o libgcc/__ashrdi3.o libgcc/__lshrdi3.o		\
-	libgcc/__muldi3.o libgcc/__udivmoddi4.o libgcc/__umoddi3.o	\
-	libgcc/__divdi3.o libgcc/__moddi3.o				\
 	syslinux/debug.o						\
+	$(LIBGCC_OBJS) \
 	$(LIBENTRY_OBJS) \
 	$(LIBMODULE_OBJS)
 
