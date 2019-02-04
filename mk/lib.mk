@@ -188,7 +188,7 @@ MINLIBOBJS = \
 CORELIBOBJS = \
 	memcpy.o memset.o memcmp.o printf.o strncmp.o vfprintf.o 	\
 	strlen.o vsnprintf.o snprintf.o stpcpy.o strcmp.o strdup.o 	\
-	strcpy.o strncpy.o setjmp.o fopen.o fread.o fread2.o puts.o 	\
+	strcpy.o strncpy.o fopen.o fread.o fread2.o puts.o 	\
 	strtoul.o strntoumax.o strcasecmp.o 				\
 	sprintf.o strlcat.o strchr.o strlcpy.o strncasecmp.o ctypes.o 	\
 	fputs.o fwrite2.o fwrite.o fgetc.o fclose.o lmalloc.o 		\
@@ -196,6 +196,7 @@ CORELIBOBJS = \
 	sys/stdcon_write.o						\
 	syslinux/memscan.o strrchr.o strcat.o				\
 	syslinux/debug.o						\
+	$(ARCH)/setjmp.o						\
 	$(LIBGCC_OBJS) \
 	$(LIBENTRY_OBJS) \
 	$(LIBMODULE_OBJS)
