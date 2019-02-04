@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <console.h>
 #include <sys/io.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <syslinux/config.h>
 
 #include "serial.h"

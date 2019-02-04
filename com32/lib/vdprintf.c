@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <inttypes.h>
 #include <sys/io.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 
 #ifdef DEBUG_PORT
 

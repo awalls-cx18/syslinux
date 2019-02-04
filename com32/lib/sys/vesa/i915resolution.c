@@ -51,7 +51,7 @@
 #define __USE_GNU
 #include <string.h>
 #include <sys/io.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <sys/pci.h>
 #include <unistd.h>
 #include <assert.h>

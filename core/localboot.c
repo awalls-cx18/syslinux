@@ -10,7 +10,7 @@
  *
  * -----------------------------------------------------------------------
  */
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <sys/io.h>
 #include <string.h>
 #include <core.h>

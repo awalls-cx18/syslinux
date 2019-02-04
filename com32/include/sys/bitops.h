@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2010-2011 Intel Corporation; author: H. Peter Anvin
+ *   Copyright 2010-2019 Intel Corporation; author: H. Peter Anvin
  *
  *   Permission is hereby granted, free of charge, to any person
  *   obtaining a copy of this software and associated documentation
@@ -36,11 +36,30 @@
 
 #include <klibc/compiler.h>
 
-#if __SIZEOF_POINTER__ == 4
-#include <i386/bitops.h>
-#elif __SIZEOF_POINTER__ == 8
-#include <x86_64/bitops.h>
+#if defined(__i386__) || defined(__x86_64__)
+# include <x86/bitops.h>
 #else
-#error "Unable to build for to-be-defined architecture type"
+static inline void set_bit(long __bit, void *__bitmap)
+{
+    char *__cp = (char *)__bitmap;
+
+    __cp[__bit >> 3] |= 1 << (__bit & 7);
+}
+
+static inline void clr_bit(long __bit, void *__bitmap)
+{
+    char *__cp = (char *)__bitmap;
+
+    __cp[__bit >> 3] &= ~(1 << (__bit & 7));
+}
+
+static inline _Bool __purefunc test_bit(long __bit, const void *__bitmap)
+{
+    const char *__cp = (char *)__bitmap;
+
+    return (__cp[__bit >> 3] >> (__bit & 7)) & 1;
+}
+
 #endif
+
 #endif /* _BITOPS_H */

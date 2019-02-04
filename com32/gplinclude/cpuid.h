@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <cpufeature.h>
 #include <sys/bitops.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <sys/io.h>
 #include <klibc/compiler.h>
 

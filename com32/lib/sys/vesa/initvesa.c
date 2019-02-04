@@ -168,7 +168,7 @@ int __vesacon_init(int *x, int *y)
     int rv;
 
     /* We need the FPU for graphics, at least libpng et al will need it... */
-    if (x86_init_fpu())
+    if (init_fpu())
 	return 10;
 
     rv = vesacon_set_mode(x, y);

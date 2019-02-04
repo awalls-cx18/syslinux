@@ -4,7 +4,7 @@
 #include <core.h>
 #include <fs.h>
 #include <fcntl.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include "pxe.h"
 #include "thread.h"
 #include "url.h"

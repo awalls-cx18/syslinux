@@ -1,6 +1,6 @@
 #include "thread.h"
 #include <limits.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 
 static void default_idle_thread_hook(void)
 {

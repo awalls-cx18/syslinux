@@ -1,4 +1,4 @@
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include "thread.h"
 
 void sem_init(struct semaphore *sem, int count)

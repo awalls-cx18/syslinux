@@ -32,7 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sys/bitops.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <syslinux/sysappend.h>
 #include "core.h"
 

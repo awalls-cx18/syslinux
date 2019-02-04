@@ -20,7 +20,7 @@
  */
 
 #include "core.h"
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 
 #define TICKS_TO_IDLE	4	/* Also in idle.inc */
 

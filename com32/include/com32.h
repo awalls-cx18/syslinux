@@ -29,7 +29,7 @@
 /*
  * com32.h
  *
- * Common declarations for com32 programs.
+ * Declarations for the BIOS call interface
  */
 
 #ifndef _COM32_H
@@ -39,6 +39,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <klibc/compiler.h>	/* For __cdecl */
+#include <x86/regs.h>
 
 /*
  * This structure defines the register frame used by the
@@ -72,25 +73,6 @@ typedef struct {
 
     reg32_t eflags;		/* Offset 40 */
 } com32sys_t;
-
-/* EFLAGS definitions */
-#define EFLAGS_CF		0x00000001
-#define EFLAGS_PF		0x00000004
-#define EFLAGS_AF		0x00000010
-#define EFLAGS_ZF		0x00000040
-#define EFLAGS_SF		0x00000080
-#define EFLAGS_TF		0x00000100
-#define EFLAGS_IF		0x00000200
-#define EFLAGS_DF		0x00000400
-#define EFLAGS_OF		0x00000800
-#define EFLAGS_IOPL		0x00003000
-#define EFLAGS_NT		0x00004000
-#define EFLAGS_RF		0x00010000
-#define EFLAGS_VM		0x00020000
-#define EFLAGS_AC		0x00040000
-#define EFLAGS_VIF		0x00080000
-#define EFLAGS_VIP		0x00100000
-#define EFLAGS_ID		0x00200000
 
 struct com32_pmapi;
 

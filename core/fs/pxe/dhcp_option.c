@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <core.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <lwip/opt.h>		/* DNS_MAX_SERVERS */
 #include <dprintf.h>
 #include "pxe.h"

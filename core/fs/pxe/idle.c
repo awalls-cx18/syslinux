@@ -16,7 +16,7 @@
 #include <core.h>
 #include <fs.h>
 #include <minmax.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include "pxe.h"
 
 void pxe_idle_init(void)

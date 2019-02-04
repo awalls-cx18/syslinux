@@ -1,5 +1,5 @@
 #include <klibc/compiler.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include "thread.h"
 #include "core.h"
 #include <dprintf.h>

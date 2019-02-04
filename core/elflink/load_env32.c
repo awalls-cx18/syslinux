@@ -10,7 +10,7 @@
 #include <setjmp.h>
 #include <linux/list.h>
 #include <netinet/in.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <core.h>
 #include <fcntl.h>
 #include <sys/file.h>

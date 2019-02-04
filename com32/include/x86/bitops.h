@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------- *
- *   
+ *
  *   Copyright 2010-2011 Intel Corporation; author: H. Peter Anvin
  *
  *   Permission is hereby granted, free of charge, to any person
@@ -10,10 +10,10 @@
  *   sell copies of the Software, and to permit persons to whom
  *   the Software is furnished to do so, subject to the following
  *   conditions:
- *   
+ *
  *   The above copyright notice and this permission notice shall
  *   be included in all copies or substantial portions of the Software.
- *   
+ *
  *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  *   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,29 +26,43 @@
  * ----------------------------------------------------------------------- */
 
 /*
- * i386 bitops.h
+ * x86/bitops.h
  *
  * Simple bitwise operations
  */
+
+#ifndef _X86_BITOPS_H
+#define _X86_BITOPS_H
+
 static inline void set_bit(long __bit, void *__bitmap)
 {
-    asm volatile("btsl %1,%0"
+    asm volatile("bts %1,%0"
 		 : "+m" (*(unsigned char *)__bitmap)
 		 : "Ir" (__bit) : "memory");
 }
 
 static inline void clr_bit(long __bit, void *__bitmap)
 {
-    asm volatile("btcl %1,%0"
+    asm volatile("btc %1,%0"
 		 : "+m" (*(unsigned char *)__bitmap)
 		 : "Ir" (__bit) : "memory");
 }
 
-static inline int __purefunc test_bit(long __bit, const void *__bitmap)
+static inline _Bool __purefunc test_bit(long __bit, const void *__bitmap)
 {
-    unsigned char __r;
-    asm("btl %2,%1; setc %0"
+    _Bool __r;
+
+#ifdef __GCC_ASM_FLAG_OUTPUTS__
+    asm("bt %2,%1"
+	: "=@ccc" (__r)
+	: "m" (*(const unsigned char *)__bitmap), "Ir" (__bit));
+#else
+    asm("bt %2,%1; setc %0"
 	: "=qm" (__r)
 	: "m" (*(const unsigned char *)__bitmap), "Ir" (__bit));
+#endif
+
     return __r;
 }
+
+#endif /* _X86_BITOPS_H */

@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 
 void drain_keyboard(void)
 {

@@ -60,6 +60,10 @@ else
 CFLAGS += -mregparm=3 -DREGPARM=3
 endif
 
+ARCH_MATH_OBJS = \
+	$(patsubst $(com32)/lib/%.c,%.o,$(wildcard $(com32)/lib/$(ARCH)/math/*.c)) \
+	$(patsubst $(com32)/lib/%.S,%.o,$(wildcard $(com32)/lib/$(ARCH)/math/*.S))
+
 VPATH = $(SRC)
 LIBOTHER_OBJS = \
 	atoi.o atol.o atoll.o calloc.o creat.o		\
@@ -107,7 +111,8 @@ LIBOTHER_OBJS = \
 	pci/readb.o pci/readw.o pci/readl.o			\
 	pci/writeb.o pci/writew.o pci/writel.o	\
 	\
-	sys/x86_init_fpu.o math/pow.o math/strtod.o			\
+	math/strtod.o							\
+	$(ARCH_MATH_OBJS)						\
 	syslinux/disk.o							\
 	\
 	syslinux/setup_data.o

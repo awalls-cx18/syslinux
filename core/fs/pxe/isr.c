@@ -9,7 +9,7 @@
 #include "thread.h"
 #include "pxe.h"
 #include <string.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <sys/io.h>
 
 extern uint8_t pxe_irq_pending;

@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <com32.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include "sysdump.h"
 
 struct cpuid_data {

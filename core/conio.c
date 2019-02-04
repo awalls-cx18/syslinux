@@ -26,7 +26,7 @@
 #include <string.h>
 #include <fs.h>
 #include <com32.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <syslinux/firmware.h>
 
 #include "bios.h"

@@ -15,9 +15,9 @@
 #include <linux/list.h>
 
 #if __SIZEOF_POINTER__ == 4
-#include <i386/module.h>
+#include "module32.h"
 #elif __SIZEOF_POINTER__ == 8
-#include <x86_64/module.h>
+#include "module64.h"
 #else
 #error "unsupported architecture"
 #endif

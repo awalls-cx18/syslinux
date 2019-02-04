@@ -18,7 +18,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <minmax.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <netinet/in.h>
 #include <lwip/api.h>
 #include "core.h"

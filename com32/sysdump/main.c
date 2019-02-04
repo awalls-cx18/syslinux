@@ -18,7 +18,7 @@
 #include <inttypes.h>
 #include <dprintf.h>
 #include <console.h>
-#include <sys/cpu.h>
+#include <x86/cpu.h>
 #include <version.h>
 #include "sysdump.h"
 
