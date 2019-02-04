@@ -32,11 +32,8 @@ GCCOPT += $(call gcc_ok,-falign-loops=0,-malign-loops=0)
 INCLUDE	= -I$(SRC)
 STRIP	= strip --strip-all -R .comment -R .note
 
-# zlib and libpng configuration flags
-LIBFLAGS = -DDYNAMIC_CRC_TABLE -DPNG_NO_CONSOLE_IO \
-	   -DPNG_NO_WRITE_SUPPORTED \
-	   -DPNG_NO_MNG_FEATURES \
-	   -DPNG_NO_READ_tIME -DPNG_NO_WRITE_tIME
+# zlib configuration flags
+LIBFLAGS = -DDYNAMIC_CRC_TABLE
 
 # We need some features in libpng which apparently aren't available in the
 # fixed-point versions.  It's OK, because we have to have a non-graphical

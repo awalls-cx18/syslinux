@@ -1,57 +1,77 @@
+libpng 1.6.36 - December 1, 2018
+================================
 
-Libpng 1.2.44 - June 26, 2010
+This is a public release of libpng, intended for use in production code.
 
-This is a public release of libpng, intended for use in production codes.
 
-Files available for download:
+Files available for download
+----------------------------
 
-Source files with LF line endings (for Unix/Linux) and with a
-"configure" script
+Source files with LF line endings (for Unix/Linux):
 
-   libpng-1.2.44.tar.xz (LZMA-compressed, recommended)
-   libpng-1.2.44.tar.gz
-   libpng-1.2.44.tar.bz2
+ * libpng-1.6.36.tar.xz (LZMA-compressed, recommended)
+ * libpng-1.6.36.tar.gz
 
-Source files with LF line endings (for Unix/Linux) without the
-"configure" script
+Source files with CRLF line endings (for Windows):
 
-   libpng-1.2.44-no-config.tar.xz (LZMA-compressed, recommended)
-   libpng-1.2.44-no-config.tar.gz
-   libpng-1.2.44-no-config.tar.bz2
-
-Source files with CRLF line endings (for Windows), without the
-"configure" script
-
-   lpng1244.zip
-   lpng1244.7z
-   lpng1244.tar.bz2
-
-Project files
-
-   libpng-1.2.44-project-netware.zip
-   libpng-1.2.44-project-wince.zip
+ * lp1636.7z (LZMA-compressed, recommended)
+ * lp1636.zip
 
 Other information:
 
-   libpng-1.2.44-README.txt
-   libpng-1.2.44-KNOWNBUGS.txt
-   libpng-1.2.44-LICENSE.txt
-   libpng-1.2.44-Y2K-compliance.txt
-   libpng-1.2.44-[previous version]-diff.txt
-
-Changes since the last public release (1.2.43):
-
-version 1.2.44 [June 26, 2010]
-
-  Rewrote png_process_IDAT_data to consistently treat extra data as warnings
-    and handle end conditions more cleanly.
-  Removed the now-redundant check for out-of-bounds new_row from example.c
+ * README.md
+ * LICENSE.md
+ * AUTHORS.md
+ * TRADEMARK.md
 
 
-Send comments/corrections/commendations to png-mng-implement at lists.sf.net
+IMPORTANT licensing update: libpng license v2
+---------------------------------------------
 
-(subscription required; visit
+The new libpng license comprises the terms and conditions from the zlib
+license, and the disclaimer from the Boost license.
+
+The legacy libpng license, used until libpng-1.6.35, is appended to the
+new license, following the precedent established in the Python Software
+Foundation License version 2.
+
+From now on, the list of contributing authors shall be maintained in a
+separate AUTHORS file.  The lists of previous contributing authors,
+mentioned in the legacy libpng license and considered to be an integral
+part of that license, are kept intact, with no further updates.
+
+
+Changes since the previous public release (version 1.6.35)
+----------------------------------------------------------
+
+ * Optimized png_do_expand_palette for ARM processors.
+   Improved performance by around 10-22% on a recent ARM Chromebook.
+   (Contributed by Richard Townsend, ARM Holdings)
+ * Fixed manipulation of machine-specific optimization options.
+   (Contributed by Vicki Pfau)
+ * Used memcpy instead of manual pointer arithmetic on Intel SSE2.
+   (Contributed by Samuel Williams)
+ * Fixed build errors with MSVC on ARM64.
+   (Contributed by Zhijie Liang)
+ * Fixed detection of libm in CMakeLists.
+   (Contributed by Cameron Cawley)
+ * Fixed incorrect creation of pkg-config file in CMakeLists.
+   (Contributed by Kyle Bentley)
+ * Fixed the CMake build on Windows MSYS by avoiding symlinks.
+ * Fixed a build warning on OpenBSD.
+   (Contributed by Theo Buehler)
+ * Fixed various typos in comments.
+   (Contributed by "luz.paz")
+ * Raised the minimum required CMake version from 3.0.2 to 3.1.
+ * Removed yet more of the vestigial support for pre-ANSI C compilers.
+ * Removed ancient makefiles for ancient systems that have been broken
+   across all previous libpng-1.6.x versions.
+ * Removed the Y2K compliance statement and the export control
+   information.
+ * Applied various code style and documentation fixes.
+
+
+Send comments/corrections/commendations to png-mng-implement at lists.sf.net.
+Subscription is required; visit
 https://lists.sourceforge.net/lists/listinfo/png-mng-implement
-to subscribe) or to glennrp at users.sourceforge.net
-
-Glenn R-P
+to subscribe.

@@ -36,6 +36,7 @@
 #include <stdbool.h>
 #include <ilog2.h>
 #include <syslinux/loadfile.h>
+#include <string.h>
 #include "vesa.h"
 #include "video.h"
 
@@ -112,6 +113,8 @@ static int read_png_file(FILE * fp)
 {
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
+    int color_type, bit_depth;
+    png_uint_32 height, width;
 #if 0
     png_color_16p image_background;
     static const png_color_16 my_background = { 0, 0, 0, 0, 0 };
@@ -136,14 +139,17 @@ static int read_png_file(FILE * fp)
     /* Set the appropriate set of transformations.  We need to end up
        with 32-bit BGRA format, no more, no less. */
 
+    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
+		 NULL, NULL, NULL);
+    
     /* Expand to RGB first... */
-    if (info_ptr->color_type & PNG_COLOR_MASK_PALETTE)
+    if (color_type & PNG_COLOR_MASK_PALETTE)
 	png_set_palette_to_rgb(png_ptr);
-    else if (!(info_ptr->color_type & PNG_COLOR_MASK_COLOR))
+    else if (!(color_type & PNG_COLOR_MASK_COLOR))
 	png_set_gray_to_rgb(png_ptr);
 
     /* Add alpha channel, if need be */
-    if (!(png_ptr->color_type & PNG_COLOR_MASK_ALPHA)) {
+    if (!(color_type & PNG_COLOR_MASK_ALPHA)) {
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 	    png_set_tRNS_to_alpha(png_ptr);
 	else
@@ -154,9 +160,10 @@ static int read_png_file(FILE * fp)
     png_set_bgr(png_ptr);
 
     /* Make sure we end up with 8-bit data */
-    if (info_ptr->bit_depth == 16)
+    bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+    if (bit_depth == 16)
 	png_set_strip_16(png_ptr);
-    else if (info_ptr->bit_depth < 8)
+    else if (bit_depth < 8)
 	png_set_packing(png_ptr);
 
 #if 0
@@ -170,14 +177,14 @@ static int read_png_file(FILE * fp)
 
     /* Whew!  Now we should get the stuff we want... */
     rp = (png_bytep)__vesacon_background;
-    for (i = 0; i < (int)info_ptr->height; i++) {
+    for (i = 0; i < (int)height; i++) {
 	row_pointers[i] = rp;
 	rp += __vesa_info.mi.h_res << 2;
     }
 
     png_read_image(png_ptr, row_pointers);
 
-    tile_image(info_ptr->width, info_ptr->height);
+    tile_image(width, height);
 
     rv = 0;
 
