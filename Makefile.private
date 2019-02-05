@@ -67,8 +67,7 @@ release:
 	cd release && xz    -9ke syslinux-$(VERSION).tar
 	cd release && bzip2 -9k  syslinux-$(VERSION).tar
 	cd release && gzip  -9   syslinux-$(VERSION).tar
-	cd release/syslinux-$(VERSION) && \
-		zip -9r ../syslinux-$(VERSION).zip *
+	cd release/syslinux-$(VERSION) && zip -9r ../syslinux-$(VERSION).zip *
 
 
 PRERELDIR := release/syslinux-$(VERSION)-pre
@@ -103,9 +102,7 @@ prerel:
 	cd $(PRERELDIR) && xz    -9ke $(PREREL).tar
 	cd $(PRERELDIR) && bzip2 -9k  $(PREREL).tar
 	cd $(PRERELDIR) && gzip  -9   $(PREREL).tar
-		gzip -9 > $(PREREL).tar.gz
-	cd $(PRERELDIR)/$(PREREL) && \
-		zip -9r ../$(PREREL).zip *
+	cd $(PRERELDIR)/$(PREREL) && zip -9r ../$(PREREL).zip *
 	expr $(PRERELNO) + 1 > $(PRERELDIR)/.prerel
 
 LATEST_PRERELNO := $(shell expr $(PRERELNO) - 1)
