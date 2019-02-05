@@ -65,7 +65,6 @@ release:
 	cd release/syslinux-$(VERSION) && rm -rf $(PRIVATE)
 	cd release && tar cvvf syslinux-$(VERSION).tar syslinux-$(VERSION)
 	cd release && xz    -9ke syslinux-$(VERSION).tar
-	cd release && bzip2 -9k  syslinux-$(VERSION).tar
 	cd release && gzip  -9   syslinux-$(VERSION).tar
 	cd release/syslinux-$(VERSION) && zip -9r ../syslinux-$(VERSION).zip *
 
@@ -100,7 +99,6 @@ prerel:
 	cd $(PRERELDIR)/$(PREREL) && rm -rf $(PRIVATE)
 	cd $(PRERELDIR) && tar cvvf $(PREREL).tar $(PREREL)
 	cd $(PRERELDIR) && xz    -9ke $(PREREL).tar
-	cd $(PRERELDIR) && bzip2 -9k  $(PREREL).tar
 	cd $(PRERELDIR) && gzip  -9   $(PREREL).tar
 	cd $(PRERELDIR)/$(PREREL) && zip -9r ../$(PREREL).zip *
 	expr $(PRERELNO) + 1 > $(PRERELDIR)/.prerel
