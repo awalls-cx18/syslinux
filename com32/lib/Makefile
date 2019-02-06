@@ -113,7 +113,6 @@ spotless: clean
 
 install: all
 	mkdir -m 755 -p $(INSTALLROOT)$(COM32DIR)
-	install -m 644 $(SRC)/com32.ld $(INSTALLROOT)$(COM32DIR)
 	-rm -rf $(INSTALLROOT)$(COM32DIR)/include
 	cp -r $(SRC)/../include $(INSTALLROOT)$(COM32DIR)
 
