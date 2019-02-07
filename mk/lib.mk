@@ -67,10 +67,10 @@ LIBOTHER_OBJS = \
 	fgets.o fprintf.o fputc.o	\
 	putchar.o				\
 	getopt.o getopt_long.o						\
-	lrand48.o stack.o memccpy.o memchr.o 		\
+	lrand48.o stack.o memccpy.o memchr.o		\
 	mempcpy.o memmem.o memmove.o memswap.o	\
 	perror.o qsort.o seed48.o \
-	srand48.o sscanf.o 						\
+	srand48.o sscanf.o						\
 	strerror.o errlist.o		\
 	strnlen.o							\
 	strncat.o strndup.o		\
@@ -172,7 +172,7 @@ LIBMODULE_OBJS = \
 
 # ZIP library object files
 LIBZLIB_OBJS = \
-	zlib/adler32.o zlib/compress.o zlib/crc32.o 			\
+	zlib/adler32.o zlib/compress.o zlib/crc32.o			\
 	zlib/uncompr.o zlib/deflate.o zlib/trees.o zlib/zutil.o		\
 	zlib/inflate.o zlib/infback.o zlib/inftrees.o zlib/inffast.o	\
 	sys/zfile.o sys/zfopen.o
@@ -188,20 +188,24 @@ MINLIBOBJS = \
 #	$(LIBVESA_OBJS)
 
 CORELIBOBJS = \
-	memcpy.o memset.o memcmp.o printf.o strncmp.o vfprintf.o 	\
-	strlen.o vsnprintf.o snprintf.o stpcpy.o strcmp.o strdup.o 	\
-	strcpy.o strncpy.o fopen.o fread.o fread2.o puts.o 	\
-	strtoul.o strntoumax.o strcasecmp.o 				\
-	sprintf.o strlcat.o strchr.o strlcpy.o strncasecmp.o ctypes.o 	\
-	fputs.o fwrite2.o fwrite.o fgetc.o fclose.o lmalloc.o 		\
-	sys/err_read.o sys/err_write.o sys/null_read.o 			\
+	memcmp.o printf.o strncmp.o vfprintf.o	\
+	strlen.o vsnprintf.o snprintf.o stpcpy.o strcmp.o strdup.o	\
+	strcpy.o strncpy.o fopen.o fread.o fread2.o puts.o	\
+	strtoul.o strntoumax.o strcasecmp.o				\
+	sprintf.o strlcat.o strchr.o strlcpy.o strncasecmp.o ctypes.o	\
+	fputs.o fwrite2.o fwrite.o fgetc.o fclose.o lmalloc.o		\
+	sys/err_read.o sys/err_write.o sys/null_read.o			\
 	sys/stdcon_write.o						\
 	syslinux/memscan.o strrchr.o strcat.o				\
 	syslinux/debug.o						\
-	$(ARCH)/setjmp.o						\
 	$(LIBGCC_OBJS) \
 	$(LIBENTRY_OBJS) \
 	$(LIBMODULE_OBJS)
+
+ifneq ($(FWCLASS),EFI)
+# For EFI, these are part of gnu-efi
+CORELIBOBJS += $(ARCH)/setjmp.o memcpy.o memset.o
+endif
 
 LDFLAGS	= -m elf_$(ARCH) --hash-style=gnu -T $(com32)/lib/$(ARCH)/elf.ld
 
