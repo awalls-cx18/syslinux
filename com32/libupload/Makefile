@@ -1,8 +1,8 @@
 # Include configuration rules
 VPATH = $(SRC)
-include $(MAKEDIR)/com32.mk
+include $(MAKEDIR)/lib.mk
 
-REQFLAGS += -I$(SRC)
+REQFLAGS += -I$(SRC) -I$(topdir)/core
 
 LIBOBJS := $(notdir $(patsubst %.c,%.o,$(sort $(wildcard $(SRC)/*.c))))
 
