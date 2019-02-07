@@ -18,7 +18,7 @@ include $(MAKEDIR)/syslinux.mk
 
 OPTFLAGS   = -g -Os
 INCLUDES   =
-CFLAGS     = -W -Wall -Wno-sign-compare -D_FILE_OFFSET_BITS=64 \
+CFLAGS     = $(WARNFLAGS) -D_FILE_OFFSET_BITS=64 \
              $(OPTFLAGS) $(INCLUDES)
 LDFLAGS    =
 LIBS	   =

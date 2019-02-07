@@ -79,7 +79,8 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/)
 ARCH ?= $(strip $(SUBARCH))
 
 # Common warnings we want for all gcc-generated code
-GCCWARN  = -W -Wall -Wstrict-prototypes $(DEBUGOPT)
+# WARNOPT is available for the user to specify additional warning flags
+GCCWARN = -W -Wall -Wstrict-prototypes $(DEBUGOPT) $(WARNOPT)
 
 # Common stanza to make gcc generate .*.d dependency files
 MAKEDEPS = -MT $@ -MD -MF $(dir $@).$(notdir $@).d
