@@ -152,7 +152,7 @@ static const struct syslinux_memmap *is_free_zone(const struct syslinux_memmap
 {
     addr_t last, llast;
 
-    dprintf("f: 0x%08x bytes at 0x%08x\n", len, start);
+    dprintf("f: 0x%08zx bytes at 0x%08zx\n", len, start);
 
     last = start + len - 1;
 
@@ -238,11 +238,11 @@ static void shuffle_dealias(struct syslinux_movelist **fraglist,
      */
     mpp = fraglist;
     while ((mp = *mpp)) {
-	dprintf("mp -> (%#x,%#x,%#x)\n", mp->dst, mp->src, mp->len);
+	dprintf("mp -> (%#zx,%#zx,%#zx)\n", mp->dst, mp->src, mp->len);
 	ps = mp->src;
 	pe = mp->src + mp->len - 1;
 	for (mx = *fraglist; mx != mp; mx = mx->next) {
-	    dprintf("mx -> (%#x,%#x,%#x)\n", mx->dst, mx->src, mx->len);
+	    dprintf("mx -> (%#zx,%#zx,%#zx)\n", mx->dst, mx->src, mx->len);
 	    /*
 	     * If there is any overlap between mx and mp, mp should be
 	     * modified and possibly split.
@@ -250,7 +250,7 @@ static void shuffle_dealias(struct syslinux_movelist **fraglist,
 	    xs = mx->src;
 	    xe = mx->src + mx->len - 1;
 
-	    dprintf("?: %#x..%#x (inside %#x..%#x)\n", ps, pe, xs, xe);
+	    dprintf("?: %#zx..%#zx (inside %#zx..%#zx)\n", ps, pe, xs, xe);
 
 	    if (pe <= xs || ps >= xe)
 		continue;	/* No overlap */
@@ -282,7 +282,7 @@ static void shuffle_dealias(struct syslinux_movelist **fraglist,
 
 	    assert(ps >= xs && pe <= xe);
 
-	    dprintf("Overlap: %#x..%#x (inside %#x..%#x)\n", ps, pe, xs, xe);
+	    dprintf("Overlap: %#zx..%#zx (inside %#zx..%#zx)\n", ps, pe, xs, xe);
 
 	    mp->src = mx->dst + (ps - xs);
 	    mp->next = *postcopy;
@@ -335,7 +335,7 @@ move_chunk(struct syslinux_movelist ***moves,
     copydst = f->dst;
     copysrc = f->src;
 
-    dprintf("Q: copylen = 0x%08x, needlen = 0x%08x\n", copylen, needlen);
+    dprintf("Q: copylen = 0x%08zx, needlen = 0x%08zx\n", copylen, needlen);
 
     if (copylen < needlen) {
 	if (reverse) {
@@ -343,7 +343,7 @@ move_chunk(struct syslinux_movelist ***moves,
 	    copysrc += (f->len - copylen);
 	}
 
-	dprintf("X: 0x%08x bytes at 0x%08x -> 0x%08x\n",
+	dprintf("X: 0x%08zx bytes at 0x%08zx -> 0x%08zx\n",
 		copylen, copysrc, copydst);
 
 	/* Didn't get all we wanted, so we have to split the chunk */
@@ -352,7 +352,8 @@ move_chunk(struct syslinux_movelist ***moves,
     }
 
     mv = new_movelist(f->dst, f->src, f->len);
-    dprintf("A: 0x%08x bytes at 0x%08x -> 0x%08x\n", mv->len, mv->src, mv->dst);
+    dprintf("A: 0x%08zx bytes at 0x%08zx -> 0x%08zx\n",
+	    mv->len, mv->src, mv->dst);
     **moves = mv;
     *moves = &mv->next;
 
@@ -368,7 +369,8 @@ move_chunk(struct syslinux_movelist ***moves,
 	freebase = f->dst + f->len;
     }
 
-    dprintf("F: 0x%08x bytes at 0x%08x\n", freelen, freebase);
+    dprintf("F: 0x%08zx bytes at 0x%08zx\n",
+	    freelen, freebase);
 
     add_freelist(mmap, freebase, freelen, SMT_FREE);
 
@@ -472,7 +474,7 @@ nomem:
 
 	    if (is_free_zone(mmap, needbase, needlen)) {
 		fp = op, f = o;
-		dprintf("!: 0x%08x bytes at 0x%08x -> 0x%08x\n",
+		dprintf("!: 0x%08zx bytes at 0x%08zx -> 0x%08zx\n",
 			f->len, f->src, f->dst);
 		copysrc = f->src;
 		copylen = needlen;
@@ -483,7 +485,7 @@ nomem:
 
 	/* Ok, bother.  Need to do real work at least with one chunk. */
 
-	dprintf("@: 0x%08x bytes at 0x%08x -> 0x%08x\n",
+	dprintf("@: 0x%08zx bytes at 0x%08zx -> 0x%08zx\n",
 		f->len, f->src, f->dst);
 
 	/* See if we can move this chunk into place by claiming
@@ -509,8 +511,8 @@ nomem:
 	    cbyte = f->dst;
 	}
 
-	dprintf("need: base = 0x%08x, len = 0x%08x, "
-		"reverse = %d, cbyte = 0x%08x\n",
+	dprintf("need: base = 0x%08zx, len = 0x%08zx, "
+		"reverse = %d, cbyte = 0x%08zx\n",
 		needbase, needlen, reverse, cbyte);
 
 	ep = is_free_zone(mmap, cbyte, 1);
@@ -527,7 +529,7 @@ nomem:
 	if (avail) {
 	    /* We can move at least part of this chunk into place without
 	       further ado */
-	    dprintf("space: start 0x%08x, len 0x%08x, free 0x%08x\n",
+	    dprintf("space: start 0x%08zx, len 0x%08zx, free 0x%08zx\n",
 		    ep->start, ep_len, avail);
 	    copylen = min(needlen, avail);
 
@@ -545,7 +547,7 @@ nomem:
 	   Then move a chunk of ourselves into place. */
 	for (op = &f->next, o = *op; o; op = &o->next, o = *op) {
 
-	    dprintf("O: 0x%08x bytes at 0x%08x -> 0x%08x\n",
+	    dprintf("O: 0x%08zx bytes at 0x%08zx -> 0x%08zx\n",
 		    o->len, o->src, o->dst);
 
 	    if (!(o->src <= cbyte && o->src + o->len > cbyte))
@@ -588,7 +590,7 @@ nomem:
 	    }
 
 	    mv = new_movelist(copydst, copysrc, copylen);
-	    dprintf("C: 0x%08x bytes at 0x%08x -> 0x%08x\n",
+	    dprintf("C: 0x%08zx bytes at 0x%08zx -> 0x%08zx\n",
 		    mv->len, mv->src, mv->dst);
 	    *moves = mv;
 	    moves = &mv->next;

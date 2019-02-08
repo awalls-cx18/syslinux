@@ -241,7 +241,7 @@ int perform_relocation(struct elf_module *module, Elf_Rel *rel) {
 		*dest += sym_addr;
 		break;
 	case R_X86_64_PC32:
-		*dest += sym_addr - (Elf32_Addr)dest;
+	        *(uint32_t *)dest += sym_addr - (Elf64_Addr)dest;
 		break;
 	case R_X86_64_COPY:
 		if (sym_addr > 0) {
@@ -338,7 +338,7 @@ int resolve_symbols(struct elf_module *module) {
 	if (rel_size > 0) {
 		// Process standard relocations
 		for (i = 0; i < rel_size/rel_entry; i++) {
-			crt_rel = (Elf64_Rel*)(rel + i*rel_entry);
+		    crt_rel = (Elf64_Rel*)((char *)rel + i*rel_entry);
 
 			res = perform_relocation(module, crt_rel);
 
@@ -351,7 +351,7 @@ int resolve_symbols(struct elf_module *module) {
 	if (rela_size > 0) {
 		// Process standard relocations
 		for (i = 0; i < rela_size/rela_entry; i++) {
-			crt_rel = (Elf64_Rel*)(rel + i*rela_entry);
+		    crt_rel = (Elf64_Rel*)((char *)rel + i*rela_entry);
 
 			res = perform_relocation(module, crt_rel);
 
@@ -367,7 +367,7 @@ int resolve_symbols(struct elf_module *module) {
 		//for (i = 0; i < plt_rel_size/sizeof(Elf64_Rel); i++) {
 		for (i = 0; i < plt_rel_size/rela_entry; i++) {
 			//crt_rel = (Elf64_Rel*)(plt_rel + i*sizeof(Elf64_Rel));
-			crt_rel = (Elf64_Rel*)(plt_rel + i*rela_entry);
+		        crt_rel = (Elf64_Rel*)((char *)plt_rel + i*rela_entry);
 
 			res = perform_relocation(module, crt_rel);
 

@@ -9,15 +9,8 @@
 	; rllpack.c
 	extern rllpack, rllunpack
 
-	; hello.c
-	extern hello
-
 	; elflink/load_env32.c
 	extern load_env32, pm_env32_run
-
-	extern mp1, mp2, mp3, mp4, mp5
-
-	extern hexdump
 
 	extern mem_init
 

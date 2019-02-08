@@ -11,19 +11,23 @@
  *
  * ----------------------------------------------------------------------- */
 
+/*
+ * Fallback empty idle routine, marked weak so it can be overridden
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <core.h>
 #include <fs.h>
 #include <minmax.h>
 #include <x86/cpu.h>
-#include "pxe.h"
+#include "core_pxe.h"
 
-void pxe_idle_init(void)
+void __attribute__((weak)) pxe_idle_init(void)
 {
 }
 
-void pxe_idle_cleanup(void)
+void __attribute__((weak)) pxe_idle_cleanup(void)
 {
     idle_hook_func = NULL;
 }

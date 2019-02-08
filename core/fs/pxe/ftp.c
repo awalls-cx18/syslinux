@@ -23,7 +23,7 @@
 #include <lwip/api.h>
 #include "core.h"
 #include "fs.h"
-#include "pxe.h"
+#include "core_pxe.h"
 #include "thread.h"
 #include "url.h"
 #include "net.h"

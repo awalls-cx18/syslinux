@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <core.h>
-#include "pxe.h"
+#include "core_pxe.h"
 
 /* DNS CLASS values we care about */
 #define CLASS_IN	1

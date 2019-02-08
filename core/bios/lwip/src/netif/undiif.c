@@ -76,7 +76,7 @@
 #include "netif/ppp_oe.h"
 #include "lwip/netifapi.h"
 #include "lwip/tcpip.h"
-#include "../../../fs/pxe/pxe.h"
+#include "core_pxe.h"
 
 #include <inttypes.h>
 #include <string.h>

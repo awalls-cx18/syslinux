@@ -4215,6 +4215,8 @@ png_do_expand_palette(png_structrp png_ptr, png_row_infop row_info,
    png_uint_32 i;
    png_uint_32 row_width=row_info->width;
 
+   (void)png_ptr;
+
    png_debug(1, "in png_do_expand_palette");
 
    if (row_info->color_type == PNG_COLOR_TYPE_PALETTE)

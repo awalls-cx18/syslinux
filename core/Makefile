@@ -25,8 +25,10 @@ include $(MAKEDIR)/embedded.mk
 -include $(objdir)/version.mk
 
 OPTFLAGS =
-INCLUDES = -I$(SRC)/include -I$(com32)/include -I$(com32)/include/sys -I$(com32)/lib \
-	-I$(SRC)/lwip/src/include -I$(SRC)/lwip/src/include/ipv4 -I$(SRC)/fs/pxe
+INCLUDES = -I$(SRC)/include -I$(com32)/include -I$(com32)/include/sys \
+	   -I$(com32)/lib \
+	   -I$(SRC)/bios/lwip/src/include \
+	   -I$(SRC)/bios/lwip/src/include/ipv4 -I$(SRC)/fs/pxe
 
 # This is very similar to cp437; technically it's for Norway and Denmark,
 # but it's unlikely the characters that are different will be used in
@@ -34,13 +36,12 @@ INCLUDES = -I$(SRC)/include -I$(com32)/include -I$(com32)/include/sys -I$(com32)
 CODEPAGE = cp865
 
 # The targets to build in this directory...
-BTARGET  = kwdhash.gen \
-	   ldlinux.bss ldlinux.sys ldlinux.bin \
+BTARGET  = kwdhash.gen ldlinux.bss ldlinux.sys \
 	   isolinux.bin isolinux-debug.bin pxelinux.0 lpxelinux.0
 
 # All primary source files for the main syslinux files
-NASMSRC	 := $(sort $(wildcard $(SRC)/*.asm))
-NASMHDR  := $(sort $(wildcard $(SRC)/*.inc))
+NASMSRC	 := $(sort $(shell find $(SRC) -name '*.asm' -print))
+NASMHDR	 := $(sort $(shell find $(SRC) -name '*.inc' -print))
 CSRC	 := $(sort $(shell find $(SRC) -name '*.c' -print))
 SSRC	 := $(sort $(shell find $(SRC) -name '*.S' -print))
 CHDR	 := $(sort $(shell find $(SRC) -name '*.h' -print))
@@ -52,50 +53,35 @@ SOBJ	 := $(subst $(SRC)/,,$(patsubst %.S,%.o,$(SSRC)))
 
 # To make this compatible with the following $(filter-out), make sure
 # we prefix everything with $(SRC)
-CORE_PXE_CSRC = \
-	$(addprefix $(SRC)/fs/pxe/, dhcp_option.c pxe.c tftp.c urlparse.c bios.c)
+CORE_PXE_DIRS  = $(SRC)/bios/pxe
+LPXELINUX_DIRS = $(SRC)/bios/lwip
+PXELINUX_DIRS  = $(SRC)/bios/legacynet
 
-LPXELINUX_CSRC = $(CORE_PXE_CSRC) \
-	$(sort $(shell find $(SRC)/lwip -name '*.c' -print)) \
-	$(addprefix $(SRC)/fs/pxe/, \
-		core.c dnsresolv.c ftp.c ftp_readdir.c gpxeurl.c http.c \
-		http_readdir.c idle.c isr.c tcp.c)
+CORE_PXE_CSRC  = $(sort $(shell find $(CORE_PXE_DIRS)  -name '*.c' -print))
+CORE_PXE_SSRC  = $(sort $(shell find $(CORE_PXE_DIRS)  -name '*.S' -print))
+LPXELINUX_CSRC = $(sort $(shell find $(LPXELINUX_DIRS) -name '*.c' -print))
+LPXELINUX_SSRC = $(sort $(shell find $(LPXELINUX_DIRS) -name '*.S' -print))
+PXELINUX_CSRC  = $(sort $(shell find $(PXELINUX_DIRS)  -name '*.c' -print))
+PXELINUX_SSRC  = $(sort $(shell find $(PXELINUX_DIRS)  -name '*.S' -print))
 
-PXELINUX_CSRC = $(CORE_PXE_CSRC) \
-	$(sort $(shell find $(SRC)/legacynet -name '*.c' -print))
+CORE_PXE_OBJS  = $(subst $(SRC)/,,$(CORE_PXE_CSRC:%.c=%.o)  $(CORE_PXE_SSRC:%.S=%.o))
+LPXELINUX_OBJS = $(subst $(SRC)/,,$(LPXELINUX_CSRC:%.c=%.o) $(LPXELINUX_SSRC:%.S=%.o))
+PXELINUX_OBJS  = $(subst $(SRC)/,,$(PXELINUX_CSRC:%.c=%.o)  $(PXELINUX_SSRC:%.S=%.o))
 
-LPXELINUX_OBJS = $(subst $(SRC)/,,$(LPXELINUX_CSRC:%.c=%.o))
-PXELINUX_OBJS  = $(subst $(SRC)/,,$(PXELINUX_CSRC:%.c=%.o))
+UNITTEST_DIRS = $(sort $(shell find $(SRC) -type d -name tests))
 
-UNITTEST_CSRC = $(shell find $(SRC) -path '*/tests/*.c' -print)
-UNITTEST_OBJS = $(subst $(SRC)/,,$(UNITTEST_CSRC:%.c=%.o))
-
-# Don't include console and network stack specific objects or unit tests
-FILTER_OBJS = %rawcon.o %plaincon.o %pxelinux-c.o %ldlinux-c.o \
-	%isolinux-c.o %localboot.o %pxeboot.o \
-	$(subst $(OBJ)/,,$(UNITTEST_OBJS)) \
-	$(subst $(OBJ)/,,$(LPXELINUX_OBJS)) \
-	$(subst $(OBJ)/,,$(PXELINUX_OBJS))
-
+# Don't include network stack specific objects or unit tests
+FILTER_DIRS = $(UNITTEST_DIRS) $(CORE_PXE_DIRS) \
+	      $(PXELINUX_DIRS) $(LPXELINUX_DIRS)
 ifeq ($(FWCLASS),EFI)
-# EFI is single-threaded, and doesn't use the LZO assembly decoder
-FILTER_OBJS += $(subst $(SRC)/,, \
-	$(patsubst %.S,%.o, $(sort $(wildcard $(SRC)/lzo/*.S))) \
-	$(patsubst %.c,%.o, $(sort $(wildcard $(SRC)/thread/*.c))) \
-	$(patsubst %.S,%.o, $(sort $(wildcard $(SRC)/thread/*.S)))) \
-	$(patsubst %.asm,%.o, $(sort $(wildcard $(SRC)/*.asm))) \
-	$(patsubst %.c,%.o, $(sort $(wildcard $(SRC)/bios*.c)))
+FILTER_DIRS += $(SRC)/bios
 endif
+FILTER_OBJS = $(patsubst $(SRC)/%,%/%,$(FILTER_DIRS))
 
 COBJS	 = $(filter-out $(FILTER_OBJS),$(COBJ))
 SOBJS	 = $(filter-out $(FILTER_OBJS),$(SOBJ))
 
-ifeq ($(FWCLASS),EFI)
-COBJS += $(subst $(SRC)/,,$(CORE_PXE_CSRC:%.c=%.o) fs/pxe/ftp.o fs/pxe/ftp_readdir.o \
-	fs/pxe/http.o fs/pxe/http_readdir.o)
-endif
-
-LIB	 = libcom32.a
+LIB	 = bios/libsyslinux.a
 LIBS	 = $(LIB) --whole-archive $(objdir)/com32/lib/libcom32core.a
 LIBDEP   = $(filter-out -% %start%,$(LIBS))
 LIBOBJS	 = $(COBJS) $(SOBJS)
@@ -145,79 +131,49 @@ ifeq ($(FWCLASS),BIOS)
 	$(NASM) -f $(NASM_ELF) $(NASMOPT) -DDATE_STR="'$(DATE)'" \
 		-DHEXDATE="$(HEXDATE)" \
 		-D$(ARCH) \
-		-I$(SRC)/ \
-		-l $(@:.o=.lsr) -o $@ -MP -MD $(dir $@).$(notdir $@).d $<
+		-I$(SRC)/ -I$(SRC)/bios/ \
+		-l $(@:.o=.lsr) -o $@ -MP -MD $(@D)/.$(@F).d $<
 
-AUXLIBS = libisolinux.a libisolinux-debug.a libldlinux.a \
-	libpxelinux.a liblpxelinux.a
-
-LDSCRIPT = $(SRC)/$(ARCH)/syslinux.ld
+AUXLIBS = bios/libpxelinux.a bios/liblpxelinux.a
+LDSCRIPT = $(SRC)/bios/syslinux.ld
 
 NASM_ELF = elf
 
-%.elf: %.o $(LIBDEP) $(LDSCRIPT) $(AUXLIBS)
+%.elf: %.o %-c.o lib%.a $(LIBDEP) $(LDSCRIPT)
 	$(LD) $(LDFLAGS) -pie -Bsymbolic \
 		-T $(LDSCRIPT) \
 		--unresolved-symbols=report-all \
-		-E --hash-style=gnu -M -o $@ $< \
-		--start-group $(LIBS) $(subst $(*F).elf,lib$(*F).a,$@) --end-group \
-		> $(@:.elf=.map)
+		-E --hash-style=gnu -M -o $@ $< $*-c.o \
+		--start-group $(*D)/lib$(*F).a $(LIBS) --end-group \
+		> $*.map
 	if [ `$(NM) -D -u $@ | wc -l` -ne 0 ]; then \
 		$(NM) -D -u $@ 1>&2; rm -f $@; false; fi
-	$(OBJDUMP) -h $@ > $(@:.elf=.sec)
-	$(PERL) $(SRC)/lstadjust.pl $(@:.elf=.lsr) $(@:.elf=.sec) $(@:.elf=.lst)
-
-libisolinux.a: rawcon.o localboot.o isolinux-c.o
-	rm -f $@
-	$(AR) cq $@ $^
-	$(RANLIB) $@
-
-libisolinux-debug.a: libisolinux.a
-	cp $^ $@
+	$(OBJDUMP) -h $@ > $*.sec
+	$(PERL) $(SRC)/lstadjust.pl $*.lsr $*.sec $*.lst
 
 # Legacy network stack
-libpxelinux.a: rawcon.o pxeboot.o pxelinux-c.o $(PXELINUX_OBJS)
-	rm -f $@
-	$(AR) cq $@ $^
-	$(RANLIB) $@
+bios/libpxelinux.a: $(CORE_PXE_OBJS) $(PXELINUX_OBJS)
 
 # LwIP network stack
-liblpxelinux.a: rawcon.o pxeboot.o pxelinux-c.o $(LPXELINUX_OBJS)
+bios/liblpxelinux.a: $(CORE_PXE_OBJS) $(LPXELINUX_OBJS)
+
+# Otherwise, no special library needed, a null library will be created
+
+bios/lib%.a:
 	rm -f $@
 	$(AR) cq $@ $^
 	$(RANLIB) $@
 
-libldlinux.a: plaincon.o localboot.o ldlinux-c.o
-	rm -f $@
-	$(AR) cq $@ $^
-	$(RANLIB) $@
-
-pxelinux.o: pxelinux.asm kwdhash.gen ../version.gen
-	$(NASM) -f $(NASM_ELF) $(NASMOPT) -DDATE_STR="'$(DATE)'" \
-		-DHEXDATE="$(HEXDATE)" \
-		-D$(ARCH) \
-		-I$(SRC)/ \
-		-DIS_LPXELINUX=0 \
-		-l $(@:.o=.lsr) -o $@ -MP -MD $(dir $@).$(notdir $@).d $<
-
-pxelinux.0: pxelinux.bin
+%.0: bios/%.bin
 	cp -f $< $@
 
-lpxelinux.o: pxelinux.asm kwdhash.gen ../version.gen
-	$(NASM) -f $(NASM_ELF) $(NASMOPT) -DDATE_STR="'$(DATE)'" \
-		-DHEXDATE="$(HEXDATE)" \
-		-D$(ARCH) \
-		-I$(SRC)/ \
-		-DIS_LPXELINUX=1 \
-		-l $(@:.o=.lsr) -o $@ -MP -MD $(dir $@).$(notdir $@).d $<
-
-lpxelinux.0: lpxelinux.bin
+%.bin: bios/%.bin
 	cp -f $< $@
 
-ldlinux.bss: ldlinux.bin
+ldlinux.bss: bios/ldlinux.bin
 	dd if=$< of=$@ bs=512 count=1
 
-ldlinux.sys: ldlinux.bin
+ldlinux.sys: bios/ldlinux.bin
 	dd if=$< of=$@ bs=512 skip=2
 
 endif # BIOS
@@ -241,11 +197,13 @@ install-all: install install-lib
 netinstall: installer
 
 tidy dist:
-	find . -type f \( -name '*.o' -o -name '*.a' -o -name '.*.d' \
-		-o -name '*.lst' \) -print | xargs -rt rm -f
-	rm -f codepage.cp *.elf stupid.* patch.offset .depend
-	rm -f *.elf.tmp *.sym
-	rm -f *.lsr *.map *.sec *.raw
+	for d in $(find . -type d -print) ; do \
+	( cd "$$d" ; \
+	  rm -f *.o *.a .*.d *.lst \
+	        codepage.cp *.elf stupid.* patch.offset .depend \
+	        *.elf.tmp *.sym \
+	        *.lsr *.map *.sec *.raw \
+	); done
 	rm -f $(OBSOLETE) $(LIB)
 
 clean: tidy
@@ -254,4 +212,4 @@ spotless: clean
 	rm -f $(BTARGET) *.bin *_bin.c
 
 # Include dependencies file
--include $(shell find . -name '.*.d' -print)
+-include $(shell find $(OBJ) -name '.*.d' -print)

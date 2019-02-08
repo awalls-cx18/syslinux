@@ -735,9 +735,11 @@ int pxechn_uuid_set(struct pxelinux_opt *pxe)
 	return -ret;	/* dhcp_unpack_packet always returns positive errors */
     }
 
-    if (pxe->opts[0][97].len >= 0 )
+    if (pxe->opts[0][97].len >= 0) {
 	pxechn_setopt(&(pxe->opts[2][97]), pxe->opts[0][97].data, pxe->opts[0][97].len);
 	return 1;
+    }
+
     return 0;
 }
 

@@ -10,7 +10,7 @@
  */
 
 #include <syslinux/video.h>
-#include "pxe.h"
+#include "core_pxe.h"
 #include <com32.h>
 
 #define LOCALBOOT_MSG	"Booting from local disk..."

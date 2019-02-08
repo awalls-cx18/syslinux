@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef uint32_t addr_t;
+typedef uintptr_t addr_t;
 
 /*
  * A syslinux_movelist is a linked list of move operations.  The ordering

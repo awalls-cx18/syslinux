@@ -148,7 +148,7 @@ int syslinux_add_memmap(struct syslinux_memmap **list,
 	}
     }
 
-    dprintf("After adding (%#x,%#x,%d):\n", start, len, type);
+    dprintf("After adding (%#zx,%#zx,%d):\n", start, len, type);
     syslinux_dump_memmap(*list);
 
     return 0;

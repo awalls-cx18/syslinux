@@ -1,11 +1,12 @@
 #include <syslinux/firmware.h>
 #include <syslinux/memscan.h>
 #include <core.h>
-#include "pxe.h"
+#include "core_pxe.h"
 #include <net.h>
 #include <minmax.h>
 #include <bios.h>
 #include <dprintf.h>
+#include "thread.h"
 
 static uint16_t real_base_mem;	   /* Amount of DOS memory after freeing */
 
@@ -457,4 +458,31 @@ void net_parse_dhcp(void)
     parse_dhcp_options(adhcp_data, adhcp_len, 0);
 
     lfree(bp);
+}
+
+/*
+ * the ASM pxenv function wrapper, return 1 if error, or 0
+ *
+ */
+__export int pxe_call(int opcode, void *data)
+{
+    static DECLARE_INIT_SEMAPHORE(pxe_sem, 1);
+    extern void pxenv(void);
+    com32sys_t regs;
+
+    sem_down(&pxe_sem, 0);
+
+#if 0
+    dprintf("pxe_call op %04x data %p\n", opcode, data);
+#endif
+
+    memset(&regs, 0, sizeof regs);
+    regs.ebx.w[0] = opcode;
+    regs.es       = SEG(data);
+    regs.edi.w[0] = OFFS(data);
+    call16(pxenv, &regs, &regs);
+
+    sem_up(&pxe_sem);
+
+    return regs.eflags.l & EFLAGS_CF;  /* CF SET if fail */
 }

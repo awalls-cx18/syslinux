@@ -19,29 +19,16 @@ CC_FOR_BUILD ?= $(CC)
 # Upstream gnu-efi has old-style function definitions.
 CFLAGS += -Wno-strict-prototypes
 
-CORE_CSRC := $(sort $(wildcard $(core)/*.c $(core)/*/*.c $(core)/*/*/*.c))
+CORE_CSRC := $(sort $(shell find '$(core)' -name '*.c' -print))
 CORE_COBJ := $(subst $(core),$(OBJ)/../core,$(patsubst %.c,%.o,$(CORE_CSRC)))
 
 # We don't want to include any of the networking stack or the thread
 # code since it will be implemented completely differently for EFI.
-FILTERED_OBJS:= $(sort $(subst $(core),$(OBJ)/../core,$(patsubst %.c,%.o, \
-	$(wildcard $(core)/legacynet/*.c) \
-	$(wildcard $(core)/fs/pxe/*.c) \
-	$(wildcard $(core)/thread/*.c))))
+FILTERED_OBJS := $(OBJ)/../core/bios/% \
+		 $(patsubst $(core)/%,$(OBJ)/../core/%/%,\
+			$(shell find '$(core)' -type d -name tests))
 
-# Don't include unit tests
-FILTERED_OBJS += $(subst $(core),$(OBJ)/../core, \
-	$(patsubst %.c,%.o,$(shell find $(core) -path "*/tests/*.c" -print)))
-
-# Don't include console objects
-CORE_OBJS = $(filter-out %hello.o %rawcon.o %plaincon.o %strcasecmp.o %bios.o \
-	%diskio_bios.o %ldlinux-c.o %isolinux-c.o %pxelinux-c.o \
-	%localboot.o %pxeboot.o \
-	$(FILTERED_OBJS),$(CORE_COBJ) $(CORE_SOBJ))
-
-CORE_OBJS += $(addprefix $(OBJ)/../core/, \
-	fs/pxe/pxe.o fs/pxe/tftp.o fs/pxe/urlparse.o fs/pxe/dhcp_option.o \
-	fs/pxe/ftp.o fs/pxe/ftp_readdir.o fs/pxe/http.o fs/pxe/http_readdir.o)
+CORE_OBJS = $(filter-out $(FILTERED_OBJS),$(CORE_COBJ))
 
 LIB_OBJS = $(addprefix $(objdir)/com32/lib/,$(CORELIBOBJS)) \
 	$(LIBEFI)

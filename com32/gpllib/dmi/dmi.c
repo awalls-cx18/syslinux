@@ -1009,7 +1009,7 @@ void parse_dmitable(s_dmi * dmi)
     int i = 0;
     uint8_t *data = NULL;
     uint8_t buf[dmi->dmitable.len];
-    memcpy(buf, (int *)dmi->dmitable.base, sizeof(uint8_t) * dmi->dmitable.len);
+    memcpy(buf, (uint8_t *)(uintptr_t)dmi->dmitable.base, dmi->dmitable.len);
     data = buf;
     dmi->memory_count = 0;
     while (i < dmi->dmitable.num && data + 4 <= buf + dmi->dmitable.len) {	/* 4 is the length of an SMBIOS structure header */

@@ -6,7 +6,7 @@
 #include <syslinux/pxe_api.h>
 #include "efi.h"
 #include "net.h"
-#include "fs/pxe/pxe.h"
+#include "core_pxe.h"
 
 const struct url_scheme url_schemes[] = {
     { "tftp", tftp_open, 0 },

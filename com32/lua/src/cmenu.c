@@ -41,6 +41,7 @@ static int l_add_item (lua_State *L)
 
 static int l_add_sep (lua_State *L)
 {
+  (void)L;
   add_sep ();
   return 0; /* FIXME return menuitem for advanced functions */
 }

@@ -86,9 +86,6 @@ struct ntfs_inode {
     uint32_t type;              /* Attribute type of this inode */
     uint8_t non_resident;
     union {                 /* Non-resident $DATA attribute */
-        struct {            /* Used only if non_resident flags isn't set */
-            uint32_t offset;    /* Data offset */
-        } resident;
         struct {            /* Used only if non_resident is set */
             struct runlist *rlist;
         } non_resident;

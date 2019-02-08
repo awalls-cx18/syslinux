@@ -2,11 +2,11 @@
 #include <x86/cpu.h>
 #include "thread.h"
 #include "core.h"
-#include <dprintf.h>
 
-#ifndef DEBUG_THREAD
-#define dprintf
+#ifndef DEBUG_THREAD		/* Thread debugging is extra tricky */
+# undef DEBUG_CORE
 #endif
+#include <dprintf.h>
 
 void (*sched_hook_func)(void);
 

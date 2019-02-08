@@ -671,8 +671,6 @@ static int index_inode_setup(struct fs_info *fs, unsigned long mft_no,
         NTFS_PVT(inode)->type = attr->type;
 
         if (!attr->non_resident) {
-            NTFS_PVT(inode)->data.resident.offset =
-                (uint32_t)((uint8_t *)attr + attr->data.resident.value_offset);
             inode->size = attr->data.resident.value_len;
         } else {
             attr_len = (uint8_t *)attr + attr->len;

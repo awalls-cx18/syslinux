@@ -54,8 +54,8 @@ void pm_load_high(com32sys_t *regs)
 
     bytes     = regs->eax.l;
     zero_mask = regs->edx.w[0];
-    buf       = (char *)regs->edi.l;
-    limit     = (char *)(regs->ebp.l & ~zero_mask);
+    buf       = (char *)(uintptr_t)regs->edi.l;
+    limit     = (char *)(uintptr_t)(regs->ebp.l & ~zero_mask);
     file      = handle_to_file(regs->esi.w[0]);
     fs        = file->fs;
 

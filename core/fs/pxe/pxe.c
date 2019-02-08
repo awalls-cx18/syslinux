@@ -5,7 +5,7 @@
 #include <fs.h>
 #include <fcntl.h>
 #include <x86/cpu.h>
-#include "pxe.h"
+#include "core_pxe.h"
 #include "thread.h"
 #include "url.h"
 #include "tftp.h"
@@ -96,33 +96,6 @@ static int gendotquad(char *dst, uint32_t ip)
 		   ((const uint8_t *)&ip)[1],
 		   ((const uint8_t *)&ip)[2],
 		   ((const uint8_t *)&ip)[3]);
-}
-
-/*
- * the ASM pxenv function wrapper, return 1 if error, or 0
- *
- */
-__export int pxe_call(int opcode, void *data)
-{
-    static DECLARE_INIT_SEMAPHORE(pxe_sem, 1);
-    extern void pxenv(void);
-    com32sys_t regs;
-
-    sem_down(&pxe_sem, 0);
-
-#if 0
-    dprintf("pxe_call op %04x data %p\n", opcode, data);
-#endif
-
-    memset(&regs, 0, sizeof regs);
-    regs.ebx.w[0] = opcode;
-    regs.es       = SEG(data);
-    regs.edi.w[0] = OFFS(data);
-    call16(pxenv, &regs, &regs);
-
-    sem_up(&pxe_sem);
-
-    return regs.eflags.l & EFLAGS_CF;  /* CF SET if fail */
 }
 
 /*

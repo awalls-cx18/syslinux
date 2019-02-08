@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <netinet/in.h>
-#include "pxe.h"
+#include "core_pxe.h"
 
 /* Port number bitmap - port numbers 49152 (0xc000) to 57343 (0xefff) */
 #define PORT_NUMBER_BASE	49152

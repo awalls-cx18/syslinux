@@ -203,11 +203,6 @@ ROOT_FS_OPS:
 		pm_call load_env32
 		jmp kaboom		; load_env32() shouldn't return. If it does, then kaboom!
 
-print_hello:
-enter_command:
-auto_boot:
-		pm_call hello
-
 ;
 ; Save hardwired DHCP options.  This is done before the C environment
 ; is initialized, so it has to be done in assembly.

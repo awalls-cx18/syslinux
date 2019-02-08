@@ -4,7 +4,7 @@
 #include <x86/cpu.h>
 #include <lwip/opt.h>		/* DNS_MAX_SERVERS */
 #include <dprintf.h>
-#include "pxe.h"
+#include "core_pxe.h"
 
 char LocalDomain[256];
 
@@ -231,13 +231,10 @@ void parse_dhcp(const void *pkt, size_t pkt_len, int pkt_type)
 {
     const struct bootp_t *dhcp = (const struct bootp_t *)pkt;
     int opt_len;
-    int min_opt = 0;
 
     IPInfo.ipver = 4;		/* This is IPv4 only for now... */
 
     over_load = 0;
-    if (pkt_type == 1 || pkt_type == 3)
-	min_opt = 43;
     if ((pkt_type == 2) && ip_ok(dhcp->yip))
         IPInfo.myip = dhcp->yip;
 

@@ -46,7 +46,7 @@
 #include <syslinux/boot.h>
 
 struct shuffle_descriptor {
-    uint32_t dst, src, len;
+    addr_t dst, src, len;
 };
 
 /*
@@ -105,7 +105,7 @@ int syslinux_do_shuffle(struct syslinux_movelist *fraglist,
 
     syslinux_free_memmap(rxmap);
 
-    dprintf("desczone = 0x%08x, descfree = 0x%08x\n", desczone, descfree);
+    dprintf("desczone = 0x%08zx, descfree = 0x%08zx\n", desczone, descfree);
 
     rxmap = syslinux_dup_memmap(memmap);
     if (!rxmap)
@@ -165,7 +165,7 @@ int syslinux_do_shuffle(struct syslinux_movelist *fraglist,
     {
 	addr_t descoffs = descaddr - (addr_t) dbuf;
 
-	dprintf("nmoves = %d, nzero = %d, dbuf = %p, offs = 0x%08x\n",
+	dprintf("nmoves = %d, nzero = %d, dbuf = %p, offs = 0x%08zx\n",
 		nmoves, nzero, dbuf, descoffs);
     }
 #endif
@@ -177,7 +177,7 @@ int syslinux_do_shuffle(struct syslinux_movelist *fraglist,
 	dp->dst = mp->dst;
 	dp->src = mp->src;
 	dp->len = mp->len;
-	dprintf2("[ %08x %08x %08x ]\n", dp->dst, dp->src, dp->len);
+	dprintf2("[ %08zx %08zx %08zx ]\n", dp->dst, dp->src, dp->len);
 	dp++;
 	np++;
     }
@@ -188,7 +188,7 @@ int syslinux_do_shuffle(struct syslinux_movelist *fraglist,
 	    dp->dst = ml->start;
 	    dp->src = (addr_t) - 1;	/* bzero region */
 	    dp->len = ml->next->start - ml->start;
-	    dprintf2("[ %08x %08x %08x ]\n", dp->dst, dp->src, dp->len);
+	    dprintf2("[ %08zx %08zx %08zx ]\n", dp->dst, dp->src, dp->len);
 	    dp++;
 	    np++;
 	}

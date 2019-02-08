@@ -481,8 +481,8 @@ static pt_menuitem getmenuoption(pt_menu menu, uchar top, uchar left, uchar star
         if (tmp < curr)
             first = calc_first_early(menu, tmp);
         curr = tmp;
-        } else {
-        if (ms->keys_handler)   // Call extra keys handler
+        } else if (ms->keys_handler) {
+	    // Call extra keys handler
             ms->keys_handler(ms, menu->items[curr], asc);
 
             /* The handler may have changed the UI, reset it on exit */

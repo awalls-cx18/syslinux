@@ -8,7 +8,7 @@
 #include <syslinux/config.h>
 #include <netinet/in.h>
 #include <sys/times.h>
-#include <fs/pxe/pxe.h>
+#include <core_pxe.h>
 #include <fs/pxe/url.h>
 #include <fs/pxe/tftp.h>
 #include "upload_backend.h"

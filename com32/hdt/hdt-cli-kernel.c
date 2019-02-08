@@ -34,6 +34,9 @@
 #include "hdt-cli.h"
 #include "hdt-common.h"
 
+/* False positive warning in this file */
+#pragma GCC diagnostic ignored "-Wsizeof-pointer-memaccess"
+
 void main_show_kernel(int argc __unused, char **argv __unused,
 		      struct s_hardware *hardware)
 {

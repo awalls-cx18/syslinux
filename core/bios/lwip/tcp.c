@@ -16,7 +16,7 @@
  * Common operations for TCP-based network protocols
  */
 
-#include "pxe.h"
+#include "core_pxe.h"
 #include "net.h"
 
 const struct pxe_conn_ops tcp_conn_ops = {

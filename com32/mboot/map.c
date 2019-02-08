@@ -61,7 +61,7 @@ addr_t map_data(const void *data, size_t len, size_t align, int flags)
 	return 0;
     }
 
-    dprintf("Mapping 0x%08zx bytes (%#x pad) at 0x%08x\n", len, pad, start);
+    dprintf("Mapping 0x%08zx bytes (%#zx pad) at 0x%08zx\n", len, pad, start);
 
     if (start + len + pad > mboot_high_water_mark)
 	mboot_high_water_mark = start + len + pad;
@@ -200,12 +200,12 @@ struct multiboot_header *map_image(void *ptr, size_t len)
 		    && eh->e_entry < ph->p_vaddr + msize)
 		    regs.eip = eh->e_entry + (ph->p_paddr - ph->p_vaddr);
 
-		dprintf("Segment at 0x%08x data 0x%08x len 0x%08x\n",
+		dprintf("Segment at 0x%08zx data 0x%08zx len 0x%08zx\n",
 			addr, dsize, msize);
 
 		if (syslinux_memmap_type(amap, addr, msize) != SMT_FREE) {
 		    printf
-			("Memory segment at 0x%08x (len 0x%08x) is unavailable\n",
+			("Memory segment at 0x%08zx (len 0x%08zx) is unavailable\n",
 			 addr, msize);
 		    return NULL;	/* Memory region unavailable */
 		}
@@ -306,12 +306,12 @@ struct multiboot_header *map_image(void *ptr, size_t len)
 		    && eh64->e_entry < ph64->p_vaddr + msize)
 		    regs.eip = eh64->e_entry + (ph64->p_paddr - ph64->p_vaddr);
 
-		dprintf("Segment at 0x%08x data 0x%08x len 0x%08x\n",
+		dprintf("Segment at 0x%08zx data 0x%08zx len 0x%08zx\n",
 			addr, dsize, msize);
 
 		if (syslinux_memmap_type(amap, addr, msize) != SMT_FREE) {
 		    printf
-			("Memory segment at 0x%08x (len 0x%08x) is unavailable\n",
+			("Memory segment at 0x%08zx (len 0x%08zx) is unavailable\n",
 			 addr, msize);
 		    return NULL;	/* Memory region unavailable */
 		}
@@ -414,7 +414,7 @@ struct multiboot_header *map_image(void *ptr, size_t len)
 
 	if (syslinux_memmap_type(amap, mbh->load_addr, data_len + bss_len)
 	    != SMT_FREE) {
-	    printf("Memory segment at 0x%08x (len 0x%08x) is unavailable\n",
+	    printf("Memory segment at 0x%08x (len 0x%08zx) is unavailable\n",
 		   mbh->load_addr, data_len + bss_len);
 	    return NULL;		/* Memory region unavailable */
 	}

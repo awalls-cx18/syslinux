@@ -4,7 +4,7 @@
 #include <lwip/dns.h>
 #include <core.h>
 #include <net.h>
-#include "pxe.h"
+#include "core_pxe.h"
 
 #include <dprintf.h>
 

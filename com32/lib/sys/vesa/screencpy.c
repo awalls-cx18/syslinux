@@ -59,7 +59,7 @@ void __vesacon_init_copy_to_screen(void)
 	    winn = 1;
 
 	wi.win_num = winn;
-	wi.win_base = (char *)(mi->win_seg[winn] << 4);
+	wi.win_base = (char *)(uintptr_t)(mi->win_seg[winn] << 4);
 	wi.win_size = mi->win_size << 10;
 	wi.win_gshift = ilog2(mi->win_grain) + 10;
 	wi.win_pos = -1;	/* Undefined position */

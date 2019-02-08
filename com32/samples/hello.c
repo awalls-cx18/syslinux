@@ -18,7 +18,8 @@ int main(int argc __unused, char **argv __unused)
     int *nums = NULL;
 
     nums = malloc(NUM_COUNT * sizeof(int));
-    printf("Hello, world, from 0x%08X! malloc return %p\n", (unsigned int)&main, nums);
+    printf("Hello, world, from %p! malloc return %p\n",
+	   (const void *)&main, nums);
 
     free(nums);
 

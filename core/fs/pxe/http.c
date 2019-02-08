@@ -1,7 +1,7 @@
 #include <syslinux/sysappend.h>
 #include <ctype.h>
 #include <lwip/api.h>
-#include "pxe.h"
+#include "core_pxe.h"
 #include "version.h"
 #include "url.h"
 #include "net.h"

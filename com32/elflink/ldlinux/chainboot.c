@@ -61,7 +61,7 @@ void chainboot_file(const char *file, uint32_t type)
     reg.eax.l = max;
     reg.ebx.l = 0;
     reg.edx.w[0] = 0;
-    reg.edi.l = (uint32_t)buf;
+    reg.edi.l = (uintptr_t)buf;
     reg.ebp.l = -1;	/* XXX: limit? */
     reg.esi.w[0] = rv;
 

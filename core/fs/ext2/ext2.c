@@ -29,7 +29,7 @@ static const void *__ext2_get_group_desc(struct fs_info *fs, uint32_t group_num)
 {
     struct ext2_sb_info *sbi = EXT2_SB(fs);
     uint32_t desc_block, desc_index;
-    uint8_t *p;
+    const uint8_t *p;
 
     if (group_num >= sbi->s_groups_count) {
 	printf ("ext2_get_group_desc"

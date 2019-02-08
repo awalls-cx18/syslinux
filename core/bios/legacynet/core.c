@@ -2,7 +2,7 @@
 #include <com32.h>
 #include <core.h>
 #include <net.h>
-#include <pxe.h>
+#include "core_pxe.h"
 #include <minmax.h>
 
 /* Common receive buffer */

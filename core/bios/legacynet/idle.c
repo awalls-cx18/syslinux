@@ -17,7 +17,7 @@
 #include <fs.h>
 #include <minmax.h>
 #include <x86/cpu.h>
-#include "pxe.h"
+#include "core_pxe.h"
 
 static int pxe_idle_poll(void)
 {

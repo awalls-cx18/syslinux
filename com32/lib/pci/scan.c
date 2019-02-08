@@ -650,46 +650,45 @@ int get_module_name_from_alias(struct pci_domain *domain, char *modules_alias_pa
 
     /* looking for the next field */
     result = strtok(line+strlen("alias pci:v"), delims);
-    while( result != NULL ) {
-	if (field==0) {
+    while (result) {
+	if (!field) {
+	    /* Searching for the vendor separator*/
+	    char *temp = strstr(result,"d");
+	    if (temp != NULL) {
+		strlcpy(vendor_id,result,temp-result);
+		result+=strlen(vendor_id)+1;
+	    }
 
-		/* Searching for the vendor separator*/
-		char *temp = strstr(result,"d");
-		if (temp != NULL) {
-			strlcpy(vendor_id,result,temp-result);
-			result+=strlen(vendor_id)+1;
-		}
+	    /* Searching for the product separator*/
+	    temp = strstr(result,"sv");
+	    if (temp != NULL) {
+		strlcpy(product_id,result,temp-result);
+		result+=strlen(product_id)+1;
+	    }
 
-		/* Searching for the product separator*/
-		temp = strstr(result,"sv");
-		if (temp != NULL) {
-			strlcpy(product_id,result,temp-result);
-			result+=strlen(product_id)+1;
-		}
+	    /* Searching for the sub vendor separator*/
+	    temp = strstr(result,"sd");
+	    if (temp != NULL) {
+		strlcpy(sub_vendor_id,result,temp-result);
+		result+=strlen(sub_vendor_id)+1;
+	    }
 
-		/* Searching for the sub vendor separator*/
-		temp = strstr(result,"sd");
-		if (temp != NULL) {
-			strlcpy(sub_vendor_id,result,temp-result);
-			result+=strlen(sub_vendor_id)+1;
-		}
-
-		/* Searching for the sub product separator*/
-		temp = strstr(result,"bc");
-		if (temp != NULL) {
-			strlcpy(sub_product_id,result,temp-result);
-			result+=strlen(sub_product_id)+1;
-		}
-	/* That's the module name */
-	} else if ((strlen(result)>2) &&
-			(result[0]==0x20))
-		strcpy(module_name,result+1);
-		/* We have to replace \n by \0*/
-		module_name[strlen(module_name)-1]='\0';
+	    /* Searching for the sub product separator*/
+	    temp = strstr(result,"bc");
+	    if (temp != NULL) {
+		strlcpy(sub_product_id,result,temp-result);
+		result+=strlen(sub_product_id)+1;
+	    }
+	} else if (strlen(result) > 2 && result[0] == ' ') {
+	    /* That is the module name */
+	    strcpy(module_name,result+1);
+	    /* We have to replace \n by \0*/
+	    module_name[strlen(module_name)-1] = '\0';
+	}
 	field++;
 
 	/* Searching the next field */
-        result = strtok( NULL, delims );
+        result = strtok(NULL, delims);
     }
 
     /* Now we have extracted informations from the modules.alias

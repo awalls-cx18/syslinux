@@ -169,9 +169,11 @@ void efi_destroy_binding(struct efi_binding *b, EFI_GUID *guid)
     free(b);
 }
 
-#undef kaboom
-void kaboom(void)
+__export __noreturn _kaboom(void)
 {
+    /* Return to EFI here somehow? */
+    for (;;)
+	asm volatile("hlt");
 }
 
 void printf_init(void)
@@ -1237,7 +1239,10 @@ bail:
 }
 
 extern struct disk *efi_disk_init(EFI_HANDLE);
-extern void serialcfg(uint16_t *, uint16_t *, uint16_t *);
+static void serialcfg(uint16_t *iobase, uint16_t *divisor, uint16_t *flowctl)
+{
+    *iobase = *divisor = *flowctl = 0;
+}
 
 extern struct vesa_ops efi_vesa_ops;
 

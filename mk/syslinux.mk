@@ -1,4 +1,4 @@
-## -*- makefile -*- -------------------------------------------------------
+## -*- makefile -*- ------------------------------------------------------
 ##   
 ##   Copyright 2008 H. Peter Anvin - All Rights Reserved
 ##
@@ -80,14 +80,17 @@ ARCH ?= $(strip $(SUBARCH))
 
 # Common warnings we want for all gcc-generated code
 # WARNOPT is available for the user to specify additional warning flags
-GCCWARN = -W -Wall -Wstrict-prototypes $(DEBUGOPT) $(WARNOPT)
+GCCWARN = -W -Wall -Wstrict-prototypes \
+	  -Wno-implicit-fallthrough -Wno-format-truncation \
+	  -Wno-stringop-overflow \
+	  $(DEBUGOPT) $(WARNOPT)
 
 # Common stanza to make gcc generate .*.d dependency files
-MAKEDEPS = -MT $@ -MD -MF $(dir $@).$(notdir $@).d
+MAKEDEPS = -MT $@ -MD -MF $(@D)/.$(@F).d
 
 # Dependencies that exclude system headers; use whenever we use
 # header files from the platform.
-UMAKEDEPS = -MT $@ -MMD -MF $(dir $@).$(notdir $@).d
+UMAKEDEPS = -MT $@ -MMD -MF $(@D)/.$(@F).d
 
 # Items that are only appropriate during development; this file is
 # removed when tarballs are generated.

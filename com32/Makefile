@@ -1,5 +1,10 @@
 SUBDIRS = tools lib libutil gpllib libupload elflink/ldlinux modules mboot \
-	  menu samples elflink rosh cmenu hdt gfxboot sysdump lua/src chain
+	  menu samples elflink rosh cmenu lua/src
+
+ifneq ($(FWCLASS),EFI)
+# These tools are no applicable to EFI, or need serious porting
+SUBDIRS += hdt gfxboot sysdump chain
+endif
 
 .PHONY: subdirs $(SUBDIRS)
 subdirs: $(SUBDIRS)

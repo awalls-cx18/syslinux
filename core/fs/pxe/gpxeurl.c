@@ -1,10 +1,11 @@
-#include "pxe.h"
-#if GPXE
+/*
+ * Dummy gPXE stub
+ */
 
-void gpxe_open(struct inode *inode, const char *url)
+#include "core_pxe.h"
+
+void __attribute__((weak)) gpxe_open(struct inode *inode, const char *url)
 {
     (void)inode;
     (void)url;
 }
-
-#endif /* GPXE */
