@@ -4,10 +4,16 @@
 #include <klibc/compiler.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <x86/regs.h>
 
-static inline bool cpu_has_eflag(unsigned long flag)
+static inline __constfunc bool cpu_has_eflag(unsigned long flag)
 {
     unsigned long f1, f2;
+
+    if (__builtin_constant_p(flag)) {
+	if (!(flag & ~(unsigned long)KNOWN_EFLAGS))
+	    return true;
+    }
 
     asm("pushf ; "
 	"pushf ; "
