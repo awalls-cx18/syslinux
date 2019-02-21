@@ -6,13 +6,13 @@
 #include <stdbool.h>
 #include <x86/regs.h>
 
-static inline __constfunc bool cpu_has_eflag(unsigned long flag)
+static inline __constfunc unsigned long cpu_has_eflags(unsigned long flags)
 {
     unsigned long f1, f2;
 
-    if (__builtin_constant_p(flag)) {
-	if (!(flag & ~(unsigned long)KNOWN_EFLAGS))
-	    return true;
+    if (__builtin_constant_p(flags)) {
+	if (!(flags & ~(unsigned long)KNOWN_EFLAGS))
+	    return flags;	/* We know we have them all */
     }
 
     asm("pushf ; "
@@ -25,9 +25,14 @@ static inline __constfunc bool cpu_has_eflag(unsigned long flag)
 	"pushf ; "
 	"pop %1 ; "
 	"popf"
-	: "=&r" (f1), "=&r" (f2) : "ri" (flag));
+	: "=&r" (f1), "=&r" (f2) : "ri" (flags));
 
-    return !!((f1 ^ f2) & flag);
+    return (f1 ^ f2) & flags;
+}
+
+static inline __constfunc bool cpu_has_eflag(unsigned long flag)
+{
+    return cpu_has_eflags(flag) != 0;
 }
 
 static inline uint64_t rdtsc(void)

@@ -317,6 +317,7 @@ struct cpuflag {
 
 static void sysappend_set_cpu(void)
 {
+    unsigned long have_eflags;
     static char cpu_str[6+6] = "CPU=";
     char *p = cpu_str + 4;
     static const struct cpuflag cpuflags[] = {
@@ -331,10 +332,11 @@ static void sysappend_set_cpu(void)
     const struct cpuflag *cf;
 
     /* Not technically from DMI, but it fit here... */
+    have_eflags = cpu_has_eflags(EFLAGS_ID|EFLAGS_AC);
 
-    if (!cpu_has_eflag(EFLAGS_ID)) {
+    if (!(have_eflags & EFLAGS_ID)) {
 	/* No CPUID */
-	*p++ = cpu_has_eflag(EFLAGS_AC) ? '4' : '3';
+	*p++ = (have_eflags & EFLAGS_AC) ? '4' : '3';
     } else {
 	uint32_t flags[4], eax, ebx, family;
 	uint32_t ext_level;
