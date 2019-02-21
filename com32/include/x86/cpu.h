@@ -25,7 +25,7 @@ static inline __constfunc bool cpu_has_eflag(unsigned long flag)
 	"pushf ; "
 	"pop %1 ; "
 	"popf"
-	: "=r" (f1), "=r" (f2) : "ri" (flag));
+	: "=&r" (f1), "=&r" (f2) : "ri" (flag));
 
     return !!((f1 ^ f2) & flag);
 }
