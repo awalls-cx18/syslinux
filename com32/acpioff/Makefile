@@ -40,9 +40,12 @@ GCCWARN += -Wno-unused-parameter
 
 LIBACPICA_OBJS := $(foreach dir,$(LIBACPICA_SRC_DIRS),$(patsubst %.c,%.o,$(wildcard $(dir)/*.c)))
 
-all: libacpica.a acpioff.c32
+all: acpioff.c32
 
-libacpica.a: $(LIBACPICA_OBJS)
+acpioff.elf: acpioff.o $(LIBS) $(C_LIBS) $(COM32LD)
+	$(LD) $(LDFLAGS) -o $@ $(filter-out $(COM32LD),$^)
+
+$(CURDIR)/libacpica.a: $(LIBACPICA_OBJS)
 	rm -f $@
 	$(AR) cq $@ $^
 	$(RANLIB) $@
