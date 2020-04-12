@@ -18,7 +18,21 @@
 
 #undef SECTOR_SIZE		/* Defined in msdos_fs.h for no good reason */
 #undef SECTOR_BITS
-#include <linux/ext2_fs.h>	/* EXT2_IOC_* */
+
+#ifndef FS_IOC_GETFLAGS
+/* Old kernel headers, these were once ext2-specific... */
+# include <linux/ext2_fs.h>     /* EXT2_IOC_* */
+
+# define FS_IOC_GETFLAGS EXT2_IOC_GETFLAGS
+# define FS_IOC_SETFLAGS EXT2_IOC_SETFLAGS
+
+# define FS_IMMUTABLE_FL EXT2_IMMUTABLE_FL
+
+#else
+
+# include <ext2fs/ext2_fs.h>
+
+#endif
 
 #ifndef FAT_IOCTL_GET_ATTRIBUTES
 # define FAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
