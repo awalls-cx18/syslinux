@@ -79,7 +79,7 @@ UMAKEDEPS = -Wp,-MT,$@,-MMD,$(dir $@).$(notdir $@).d
 
 # Items that are only appropriate during development; this file is
 # removed when tarballs are generated.
--include $(MAKEDIR)/devel.mk
+#-include $(MAKEDIR)/devel.mk
 
 # Local additions, like -DDEBUG can go here
 -include $(MAKEDIR)/local.mk
